@@ -1,0 +1,45 @@
+﻿boucot_map;system;stage;zsort;ztype;zones;persent_zone_lat;episodes;fill_order
+Map 18;Triassic;Rhaetian;1;single;warm_temp;100;warm_temp2;3
+Map 18;Triassic;Norian;2;single;warm_temp;100;warm_temp2;3
+Map 18;Triassic;Carnian;3;single;warm_temp;100;warm_temp2;3
+map17;Triassic;Anisian;4;single;warm_temp;100;warm_temp2;3
+map17;Triassic;Ladinian;5;single;warm_temp;100;warm_temp2;3
+map16;Triassic;Olenekian;6;single;warm_temp;100;warm_temp2;3
+map16;Triassic;Induan;7;single;warm_temp;100;warm_temp2;3
+map15;Permian;Changhsingian;8;upper;cold;36;cold1;1
+map15;Permian;Changhsingian;9;lower;cool_temp;64;cool_temp2;2
+map15;Permian;Wuchiapingian;10;upper;cold;36;cold1;1
+map15;Permian;Wuchiapingian;11;lower;cool_temp;64;cool_temp2;2
+map15;Permian;Capitanian;12;upper;cold;36;cold1;1
+map15;Permian;Capitanian;13;lower;cool_temp;64;cool_temp2;2
+map15;Permian;Wordian;14;upper;cold;36;cold1;1
+map15;Permian;Wordian;15;lower;cool_temp;64;cool_temp2;2
+map15;Permian;Roadian;16;upper;cold;36;cold1;1
+map15;Permian;Roadian;17;lower;cool_temp;64;cool_temp2;2
+map15;Permian;Kungurian;18;upper;cold;36;cold1;1
+map15;Permian;Kungurian;19;lower;cool_temp;64;cool_temp2;2
+map15;Permian;Artinskian;20;upper;cold;36;cold1;1
+map15;Permian;Artinskian;21;lower;cool_temp;64;cool_temp2;2
+map14;Permian;Sakmarian;22;upper;cool_temp;38;cool_temp2;2
+map14;Permian;Sakmarian;23;lower;warm_temp;62;warm_temp1;3
+map14;Permian;Asselian;24;upper;cool_temp;38;cool_temp2;2
+map14;Permian;Asselian;25;lower;warm_temp;62;warm_temp1;3
+map13;Carboniferous;Gzhelian;26;single;warm_temp;100;warm_temp1;3
+map13;Carboniferous;Kasimovian;27;single;warm_temp;100;warm_temp1;3
+map12;Carboniferous;Moscovian;28;upper;cool_temp;26;cool_temp1;2
+map12;Carboniferous;Moscovian;29;lower;warm_temp;73;warm_temp1;3
+map12;Carboniferous;Bashkirian;30;upper;cool_temp;26;cool_temp1;2
+map12;Carboniferous;Bashkirian;31;lower;warm_temp;73;warm_temp1;3
+map11;Carboniferous;Serpukhovian;32;upper;cool_temp;2;cool_temp1;2
+map11;Carboniferous;Serpukhovian;33;lower;warm_temp;98;warm_temp1;3
+map10;Carboniferous;Visean;34;single;warm_temp;100;warm_temp1;3
+map10;Carboniferous;Tournaisian;35;single;warm_temp;100;warm_temp1;3
+map9;Devonian;Famennian;36;upper;arid;87;arid1;4
+map9;Devonian;Famennian;37;lower;tropical;13;tropical1;6
+map9;Devonian;Frasnian;38;upper;arid;87;arid1;4
+map9;Devonian;Frasnian;39;lower;tropical;13;tropical1;6
+map8;Devonian;Givetian;40;single;arid_tropical;100;arid_tropical1;5
+map7;Devonian;Eifelian;41;single;arid_tropical;100;arid_tropical1;5
+map6;Devonian;Emsian;42;single;arid_tropical;100;arid_tropical1;5
+map6;Devonian;Pragian;43;single;arid_tropical;100;arid_tropical1;5
+map6;Devonian;Lochkovian;44;single;arid_tropical;100;arid_tropical1;5
