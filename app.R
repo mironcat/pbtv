@@ -64,7 +64,7 @@ ui <- fluidPage(
                selectInput("vernacularFilter", "Clade:",
                            c("all", clades)),
                actionButton("showless", "show less"),
-               actionButton("showall", "show all")
+               actionButton("showall", "show more")
         )
     ),
     hr(),
@@ -89,30 +89,12 @@ ui <- fluidPage(
                
         ),
         column(width = 4,
-               # actionButton("recalc", "Filter by DT"),
-               # actionButton("showselected", "Reset"),
                tabsetPanel(
                  tabPanel("map", leafletOutput("mymap")),
                  tabPanel("paleomap",div(id = 'myDiv',
                    selectInput(inputId = "selectedStage",label = "stages", choices = stages_psb$stage ),
                    leafletOutput("paleomap")
-                 ) ),
-                 tabPanel("temp ranges",
-                   # plotOutput("temperatureplot") 
-                 ),
-                 tabPanel("syncdata",
-                          p(
-                              # actionButton("syncall", "sync all (please wait several minutes.."),
-                              # actionButton("syncoccs", "sync occs")
-                          ),
-                          p(
-                            verbatimTextOutput("sync_info") 
-                          ),
-                          p(
-                            conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                             tags$div("Loading...",id="loadmessage"))
-                          )
-                    ),
+                 ) )
                ),
                plotOutput("trangehist"),
        )
@@ -160,39 +142,23 @@ server <- function(input, output, session) {
         } 
         res
     })
-    # observeEvent(input$syncall,{
-    #   source('scripts/sync_new_data_from_DB.R')
-    #   db<-get_connection_to_db()
-    #   output$sync_info <- renderPrint({
-    #    update_colls(db) 
-    #   }) 
-    #   paleoColls <-read.csv("data/paleoColls_sibplate_only.csv")%>%left_join(stages_psb%>%dplyr::select(stage,stg,mid), by="stage")%>%
-    #     dplyr::select(stage,stg,collection_no,projects, collection_name,early_interval,late_interval,primary_reference,stratcomments,geocomments,  mid,paleolng_scotese2016, paleolat_scotese2016)
-    #   # print("Colls ready. Start occs update")
-    #   # occr_sib<-update_occs(db)
-    # }) 
-    # observeEvent(input$syncoccs,{
-    #   source('scripts/sync_new_data_from_DB.R')
-    #   output$sync_info <- renderPrint({
-    #     db<-get_connection_to_db()
-    #     occr_sib<-update_occs(db)
-    #   })      
-    # })
     
+  
     observeEvent(input$showall, {
-      # 
-      # 
-      # if(input$vernacularFilter!="all"){
-      #   occr_cl<-occr_sib%>%
-      #     filter(vernacular_name==input$vernacularFilter)
-      # } else {
-      #   occr_cl<-occr_sib
-      # }
-      # updateSliderInput(session, "redsubpample", value = c( min(occr_cl$tmin), max(occr_cl$tmax) ) )
-      # updateSliderInput(session, "bluesubpample", value = c( min(occr_cl$tmin), max(occr_cl$tmax) ) )
-      # updateSliderInput(session, "tolerance", value = max(occr_cl$trange) )
+      # set parameters for show maximum data for selected clade 
+      if(input$vernacularFilter!="all"){
+        occr_cl<-occr_sib%>%
+          filter(vernacular_name==input$vernacularFilter)
+      } else {
+        occr_cl<-occr_sib
+      }
+      updateSliderInput(session, "redsubpample", value = c( min(occr_cl$tmin), max(occr_cl$tmax) ) )
+      updateSliderInput(session, "bluesubpample", value = c( min(occr_cl$tmin), max(occr_cl$tmax) ) )
+      updateSliderInput(session, "tolerance", value = max(occr_cl$trange) )
     }) 
+    
     observeEvent(input$showless, {
+      # set parameters for show margin taxa for selected clade
       if(input$vernacularFilter!="all"){
         occr_cl<-occr_sib%>%
           filter(vernacular_name==input$vernacularFilter)
@@ -220,8 +186,6 @@ server <- function(input, output, session) {
             new_scale_fill()
         if (input$showGAT){
              p<-p+
-                # geom_line(data = sibcoord_scotese, mapping = aes(x = age_dec, y = (45-temp)/0.5 ),color="gray60" )+
-                # geom_point(data = sibcoord_scotese, mapping = aes(x = age_dec, y = (45-temp)/0.5 ),color="gray30" )
                  geom_line(data = sibcoord_scotese, mapping = aes(x = age_dec, y = temp*2 ),color="gray60" )+
                  geom_point(data = sibcoord_scotese, mapping = aes(x = age_dec, y = temp*2),color="gray30" )+
                  scale_y_continuous(
@@ -229,7 +193,6 @@ server <- function(input, output, session) {
                      limits = c(5,110),
                      breaks = seq(from=10,to=120,by=10),
                      sec.axis = sec_axis( trans =~.*0.5,breaks =seq(from=10,to=30,by=5), name="Temperature (°C)")
-                     #sec.axis = sec_axis( trans =~45-.*0.5,breaks =seq(from=50,to=-10,by=-5), name="Temperature (°C)")
                  )
         } else {
              p<-p+scale_y_continuous(
@@ -240,7 +203,6 @@ server <- function(input, output, session) {
          }
          p<-p+
             geom_point(mapping = aes(fill=tclass,shape=tclass),alpha=0.6, size=3)+
-            # scale_color_manual(breaks = c("red", "blue"),values = c("darkred", "darkblue"))+
             scale_shape_manual(name = "Subsample", breaks = c("red", "blue"),
                                values = c(22, 23))+
             scale_fill_manual(name = "Subsample", breaks = c("red", "blue"),
@@ -253,9 +215,7 @@ server <- function(input, output, session) {
               labs(title="",
                    x ="Age, MA", y = "paleolatitude")+
               theme_bw()+
-             # theme(legend.position = "none")
               theme(legend.title=element_text(size=14),legend.text=element_text(size=12), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
-          #  ggsave("kolbasa.pdf")
     })
   
     dat_brush<-reactive({
@@ -267,7 +227,7 @@ server <- function(input, output, session) {
       updateSelectInput(session, "selectedStage",choices =cur_stages$stage, selected = cur_stages$stage[1] )
       dat
     })
-                         #renderDT or renderTable
+   #renderDT or renderTable
     output$brush_info <- renderDT({
       # tclass,stage,mid, collection_name, genus,tmin,tmax, lat, lng, paleolat_scotese2016,paleolng_scotese2016
       dat_brush()%>%dplyr::select(tclass,stage, collection_name, genus,tmin,tmax, paleolat_scotese2016,paleolng_scotese2016)%>%
@@ -295,23 +255,7 @@ server <- function(input, output, session) {
       # ggsave("tempplot.pdf")
       }
     )    
-    # output$trangehist <-renderPlot(
-    #   if(nrow(dat_brush())>0){
-    #     ggplot(dat_brush()) +
-    #       geom_segment(
-    #       aes(y = tmin,
-    #           x = paleolng_scotese2016,
-    #           yend = tmax,
-    #           xend = paleolng_scotese2016,
-    #           color=tclass
-    #       ),size=3
-    #     )+
-    #       scale_color_manual(name = "taxa", breaks = c("red", "blue"),
-    #                          values = c("darkred", "darkblue"))+
-    #       theme_bw()
-    #   }
-    # )
-    
+
     points <- eventReactive(input$recalc, {
       cbind(rnorm(40) * 2 + 13, rnorm(40) + 48)
     }, ignoreNULL = FALSE)
@@ -319,10 +263,7 @@ server <- function(input, output, session) {
     output$mymap <- renderLeaflet({
       if(nrow(dat_brush())>0){
             leaflet() %>%
-                addTiles()%>%
-              # addProviderTiles(providers$CartoDB.Positron,
-              #                  options = providerTileOptions(noWrap = TRUE)
-              # ) %>%
+              addTiles()%>%
               addCircleMarkers(
                 group="collections",
                 data = dat_brush()%>%distinct(collection_no,collection_name, lng, lat, tcolor),
@@ -338,14 +279,10 @@ server <- function(input, output, session) {
     })
     output$paleomap <- renderLeaflet({
       
-      # From http://data.okfn.org/data/datasets/geo-boundaries-world-110m
       selected_stage<-input$selectedStage
       scotese_geojson <- readLines(paste0("data/Scotese2016geojson/scotese2016_",selected_stage,".geojson"), warn = FALSE) %>%
         paste(collapse = "\n") %>%
         fromJSON(simplifyVector = FALSE)
-      # scotese_geojson_coast<-readLines(paste0("data/Scotese2016geojson/coastlines/",selected_stage,".geojson"), warn = FALSE) %>%
-      #   paste(collapse = "\n") %>%
-      #   fromJSON(simplifyVector = FALSE)
       # Default styles for all features
       scotese_geojson$style = list(
         weight = 1,
@@ -354,18 +291,11 @@ server <- function(input, output, session) {
         opacity = 1,
         fillOpacity = 0.5
       )
-      # scotese_geojson_coast$style = list(
-      #   weight = 1,
-      #   color = "black",
-      #   opacity = 0.8,
-      #   fillOpacity = 0
-      # )
       paleomap<-leaflet(
         options = leafletOptions(
           crs = cres[['default']])
       )%>%addSimpleGraticule(group = "graticule")%>% 
         addGeoJSON(group = "plates", scotese_geojson)
-      # %>% addGeoJSON(group = "coastlines", scotese_geojson_coast)
       if(nrow(dat_brush())>0){
         paleomap_dat<-dat_brush()%>%distinct(stage,collection_no,collection_name, paleolng_scotese2016, paleolat_scotese2016, tcolor)%>%
           filter(stage==selected_stage)
@@ -429,14 +359,6 @@ server <- function(input, output, session) {
        as.data.frame(t(row))
       }
     })
-    # output$collection_info <- renderPrint({
-    #   rs<-input$brush_info_row_last_clicked
-    #   if (length(rs)) {
-    #     row<- dat_brush()[rs,]
-    #     cur_coll<-paleoColls%>%filter(collection_no==row$collection_no&stage==row$stage)
-    #     as.data.frame(t(cur_coll))
-    #   }
-    # })
     output$coll_info <- renderTable({
       rs<-input$brush_info_row_last_clicked
       if (length(rs)) {
@@ -452,14 +374,9 @@ server <- function(input, output, session) {
       rs<-input$brush_info_row_last_clicked
       if (length(rs)) {
         row<- dat_brush()[rs,]
-        # cur_coll<-paleoColls%>%filter(collection_no==row$collection_no&stage==row$stage)
-        # cur_coll%>%dplyr::select(
-        #   collection_name,	early_interval,	late_interval,
-        #   primary_reference,	stratcomments,	geocomments
-        # )
         url_text<-paste0("https://biogeolog.tk/admin/#/paleosib/collections/colls/",row$collection_no)
-        url <- a(url_text,target="_blank", href=url_text)
-        tagList("Collection", url)
+        url <- a(paste(url_text),target="_blank", href=url_text)
+        tagList("Collection(login and password required):", url)
       }      
 
     })
