@@ -1,4 +1,4 @@
-# pbtv
+# PBTV Shiny App
 Paleo-Biota-Temperature-Vision Shiny-application 
 
 
